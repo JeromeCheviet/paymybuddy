@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0.28
+    container_name: paymybuddy_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: paymybuddy
+      MYSQL_USER: paymybuddy
+      MYSQL_PASSWORD: P4yMy3udd!
+    ports:
+      - 3306:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+    dbdata:
