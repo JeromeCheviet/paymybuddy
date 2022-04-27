@@ -17,4 +17,19 @@ public class Contact {
     @Column(name = "friend_email")
     private String friendEmail;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getFriendEmail() {
+        return friendEmail;
+    }
+
+    public void setFriendEmail(String friendEmail) {
+        this.friendEmail = friendEmail;
+    }
 }

@@ -21,6 +21,7 @@ bank_name VARCHAR(50) NOT NULL,
 transfert_to_bank FLOAT,
 transfert_from_bank FLOAT,
 balance FLOAT NOT NULL,
+role BOOLEAN NOT NULL DEFAULT 0,
 PRIMARY KEY (id)
 );
 
@@ -57,11 +58,13 @@ FOREIGN KEY (beneficiary_user_id) REFERENCES user (id) ON DELETE CASCADE
 To try this POC, you can populate the database with this script :
 
 ```mysql
-INSERT INTO `user` (`email`, `password`, `name`, `rib`, `bank_name`, `transfert_to_bank`, `transfert_from_bank`, `balance`)
+INSERT INTO `user` (`email`, `password`, `name`, `rib`, `bank_name`, `transfert_to_bank`, `transfert_from_bank`, `balance`, `role`)
 VALUES
-('jerome@mail.fr', 'password123', 'Jerome', 'FR700932922111114444', 'banque A', '0.0', '0.0', '0.0'),
-('hayley@mail.fr', 'pass123', 'Hayley', 'FR702134456787663332', 'banque B', '0.0', '0.0', '0.0'),
-('clara@mail.fr', 'word456', 'Clara', 'FR706545033373569645', 'banque A', '0.0', '0.0', '0.0'),
-('smith@mail.fr', 'passwd890', 'Smith', 'FR70765498230992134', 'banque B', '0.0', '0.0', '0.0');
+('jerome@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Jerome', 'FR700932922111114444', 'banque A', '0.0', '0.0', '0.0', '1'),
+('hayley@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Hayley', 'FR702134456787663332', 'banque B', '0.0', '0.0', '0.0', '0'),
+('clara@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Clara', 'FR706545033373569645', 'banque A', '0.0', '0.0', '0.0', '0'),
+('smith@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Smith', 'FR70765498230992134', 'banque B', '0.0', '0.0', '0.0', '0');
 ```
+For all users, the password is ___password123___.
 
+__Please drop table before use them in production environment !__
