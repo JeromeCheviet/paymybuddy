@@ -23,8 +23,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger(SpringSecurityConfig.class);
 
+    //private static final String ADMIN = "ADMIN";
+
     @Autowired
-    @Qualifier("customUserDetailsService")
+    @Qualifier("userDetailsServiceImpl")
     private UserDetailsService customUserDetailsService;
 
     /**
@@ -38,12 +40,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         logger.debug("HTTP Security");
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/css/**").permitAll()
+                .antMatchers("/", "/signup", "/newUser", "/css/**").permitAll()
+                .antMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").defaultSuccessUrl("/home").failureUrl("/login?error=true").permitAll()
                 .and()
-                .logout().deleteCookies("JSESSIONID").logoutUrl("/logout").logoutSuccessUrl("/login");
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/login");
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.example.paymybuddy.service;
 
-import com.example.paymybuddy.model.User;
+import com.example.paymybuddy.model.dto.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,12 @@ import java.util.Optional;
  * Class use to connect user with database.
  */
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private static final Logger logger = LogManager.getLogger(CustomUserDetailsService.class);
+    private static final Logger logger = LogManager.getLogger(UserDetailsServiceImpl.class);
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     /**
      * Method to connect user with his email.
@@ -35,9 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        logger.debug("logging with email : " + email);
-        User user = Optional.ofNullable(userService.getUserByEmail(email))
-                .orElseThrow(() -> new UsernameNotFoundException("User " + email + " not found"));
+        logger.debug("logging with email : {}", email);
+        User user = Optional.ofNullable(userServiceImpl.getUserByEmail(email))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found : " + email));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getGrantedAuthorities(user));
     }
@@ -49,9 +49,9 @@ public class CustomUserDetailsService implements UserDetailsService {
      * @return List of role. Actually only ADMIN.
      */
     private List<GrantedAuthority> getGrantedAuthorities(User user) {
-        logger.debug("get role for user : " + user.getEmail());
-        if (user.getRole()) {
-            logger.debug("gGrant ADMIN role");
+        logger.debug("get role for user : {}", user.getEmail());
+        if (user.isRole()) {
+            logger.debug("Grant ADMIN role");
             return Arrays.asList(new SimpleGrantedAuthority("ADMIN"));
         }
 

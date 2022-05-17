@@ -1,6 +1,6 @@
 package com.example.paymybuddy.repository;
 
-import com.example.paymybuddy.model.Transaction;
+import com.example.paymybuddy.model.dto.Transaction;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
