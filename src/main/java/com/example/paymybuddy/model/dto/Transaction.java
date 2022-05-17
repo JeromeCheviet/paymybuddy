@@ -1,4 +1,4 @@
-package com.example.paymybuddy.model;
+package com.example.paymybuddy.model.dto;
 
 import javax.persistence.*;
 import java.time.LocalDate;

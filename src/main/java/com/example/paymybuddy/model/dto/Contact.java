@@ -1,6 +1,8 @@
-package com.example.paymybuddy.model;
+package com.example.paymybuddy.model.dto;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *  Class use to connect with table contact
@@ -17,6 +19,11 @@ public class Contact {
     @Column(name = "friend_email")
     private String friendEmail;
 
+    @ManyToMany(
+            mappedBy = "contacts"
+    )
+    private List<User> users = new ArrayList<>();
+
     public int getId() {
         return id;
     }
@@ -31,5 +38,13 @@ public class Contact {
 
     public void setFriendEmail(String friendEmail) {
         this.friendEmail = friendEmail;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

@@ -1,0 +1,36 @@
+<th:block th:insert="~{fragments/header}"></th:block>
+
+<div class="container">
+    <h2>User list</h2>
+
+    <table class="table table-light table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>Balance</th>
+            <th>Role</th>
+            <th>Change User Role</th>
+            <th>Delete User</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${users == null}">
+            <td colspan="6">No users in database</td>
+        </tr>
+        <tr th:each="user: ${users}">
+            <td><span th:text="${user.userId}">ID</span></td>
+            <td><span th:text="${user.email}">Email</span></td>
+            <td><span th:text="${user.userName}">Name</span></td>
+            <td><span th:text="${user.balance}">Balance</span></td>
+            <td><span th:text="${user.isRole} ? 'Admin' : 'User'">Role</span></td>
+            <td class="text-center"><a th:href="@{/admin/role/{userId}(userId=${user.userId})}" class="btn btn-primary"><span
+                    th:text="${user.isRole} ? 'Revoke' : 'Promote'">Change User Role</span></a></td>
+            <td class="text-center"><a th:href="@{/admin/delete/{userId}(userId=${user.userId})}"
+                                       class="btn btn-danger ">Delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<th:block th:insert="~{fragments/footer}"></th:block>

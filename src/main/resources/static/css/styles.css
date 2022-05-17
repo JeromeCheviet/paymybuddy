@@ -40,3 +40,26 @@ h1.paymybuddy-title {
     padding-left: 2.5em !important;
     padding-right: 2.5em !important;
 }
+
+.paymybuddy-logo {
+    background: #6EB861;
+    background: -webkit-linear-gradient(to right, #6EB861 0%, #8EC257 100%);
+    background: -moz-linear-gradient(to right, #6EB861 0%, #8EC257 100%);
+    background: linear-gradient(to right, #6EB861 0%, #8EC257 100%);
+    text-transform: capitalize;
+    text-align: center;
+    color: #fff;
+    display: inline-flex;
+    border-radius: 7px;
+    justify-content: center;
+    padding: 0.5em 1em;
+}
+
+.paymybuddy-link {
+    color: #6EB861;
+    text-decoration: none;
+}
+.paymybuddy-link:hover {
+    color: #000;
+    text-decoration: none;
+}

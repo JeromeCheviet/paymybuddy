@@ -1,12 +1,17 @@
-package com.example.paymybuddy.model;
+package com.example.paymybuddy.model.dto;
+
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  *  Class use to connect with table contact
  */
 @Entity
+@DynamicUpdate
 @Table(name = "user")
 public class User {
 
@@ -22,7 +27,7 @@ public class User {
     private String password;
 
     @Column(name = "name")
-    private String name;
+    private String userName;
 
     @Column(name = "rib")
     private String rib;
@@ -41,6 +46,38 @@ public class User {
 
     @Column(name = "role")
     private boolean role;
+
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "user_id")
+    List<Transaction> transactions = new ArrayList<>();
+
+    /*
+    @OneToMany(
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    @JoinColumn(name = "beneficiary_user_id")
+    List<Transaction> beneficiaries = new ArrayList<>();
+    */
+
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            }
+    )
+    @JoinTable(
+            name = "assoc_user_contact",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id")
+    )
+    private List<Contact> contacts = new ArrayList<>();
 
     public int getUserId() {
         return userId;
@@ -66,12 +103,12 @@ public class User {
         this.password = password;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getRib() {
@@ -114,11 +151,38 @@ public class User {
         this.balance = balance;
     }
 
-    public boolean getRole() {
+    public boolean isRole() {
         return role;
     }
 
     public void setRole(boolean role) {
         this.role = role;
     }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+
+    /*
+    public List<Transaction> getBeneficiaries() {
+        return beneficiaries;
+    }
+
+    public void setBeneficiaries(List<Transaction> beneficiaries) {
+        this.beneficiaries = beneficiaries;
+    }
+    */
+
+    public List<Contact> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<Contact> contacts) {
+        this.contacts = contacts;
+    }
+
 }
