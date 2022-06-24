@@ -1,4 +1,4 @@
-<th:block th:insert="~{fragments/header}" xmlns="http://www.w3.org/1999/html"></th:block>
+<th:block th:insert="~{fragments/header}"></th:block>
 
 <div id="alert-box" th:if="${(param.msg != null) and (param.msg[0] == 'nocredit')}" class="alert alert-danger"
      role="alert">
@@ -69,9 +69,10 @@
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        document.getElementById("credit").setAttribute("checked", "checked")
-    </script>
+<script>
+    document.getElementById("credit").setAttribute("checked", "checked")
+</script>
 
-    <th:block th:insert="~{fragments/footer}"></th:block>
+<th:block th:insert="~{fragments/footer}"></th:block>

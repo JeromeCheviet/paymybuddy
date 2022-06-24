@@ -15,37 +15,44 @@
 </head>
 <body>
 <div class="container-fluid p-1">
-    <nav class="navbar navbar-light p-0">
+    <nav class="navbar navbar-expand-md navbar-light p-0">
         <a href="home" class="navbar-brand p-0">
             <div class="paymybuddy-logo">Pay My Buddy</div>
         </a>
-        <ul class="nav justify-content-end">
-            <li class="nav-item">
-                <a href="home" class="nav-link" th:classappend="${title} == 'Home'? 'active' : ''">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="transfer" class="nav-link disabled" aria-current="page" th:classappend="${title} == 'Transfer'? 'active' : ''">Transfer</a>
-            </li>
-            <li class="nav-item">
-                <a href="profile" class="nav-link disabled" th:classappend="${title} == 'Profile'? 'active' : ''">Profile</a>
-            </li>
-            <li class="nav-item">
-                <a href="contact" class="nav-link disabled" th:classappend="${title} == 'Contact'? 'active' : ''">Contact</a>
-            </li>
-            <th:block th:if="${user.isRole()}">
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end fs-5" id="navbarText">
+            <ul class="navbar-nav justify-content-end">
                 <li class="nav-item">
-                    <a href="admin" class="nav-link">Admin</a>
+                    <a href="home" class="nav-link" th:classappend="${title} == 'Home'? 'active' : ''">Home</a>
                 </li>
-            </th:block>
-            <li class="nav-item">
-                <a href="logout" class="nav-link">Log off</a>
-            </li>
-        </ul>
+                <li class="nav-item">
+                    <a href="transfer" class="nav-link" aria-current="page"
+                       th:classappend="${title} == 'Transfer'? 'active' : ''">Transfer</a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile" class="nav-link" th:classappend="${title} == 'Profile'? 'active' : ''">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a href="contact" class="nav-link" th:classappend="${title} == 'Contact'? 'active' : ''">Contact</a>
+                </li>
+                <th:block th:if="${user.isRole()}">
+                    <li class="nav-item">
+                        <a href="admin" class="nav-link">Admin</a>
+                    </li>
+                </th:block>
+                <li class="nav-item">
+                    <a href="logout" class="nav-link">Log off</a>
+                </li>
+            </ul>
+        </div>
     </nav>
 </div>
-<div class="container-fluid bg-light px-4 py-3">
+<div class="container-fluid bg-light px-4 py-3 mb-5">
     <nav aria-label="breadcumb">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb fs-5">
             <th:block th:if="${title} == 'Home'">
                 <li class="breadcrumb-item active">
                     Home
@@ -53,10 +60,9 @@
             </th:block>
             <th:block th:unless="${title} == Home">
                 <li class="breadcrumb-item">
-                    <a href="home">Home</a>
+                    <a href="home" class="text-decoration-none">Home</a>
                 </li>
             </th:block>
-            <!--            if not home then on affiche le li ci-dessous-->
             <th:block th:if="${title} != 'Home'">
                 <li class="breadcrumb-item active">
                     <span th:text="${title}"></span>

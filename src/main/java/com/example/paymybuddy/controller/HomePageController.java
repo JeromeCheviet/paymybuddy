@@ -54,17 +54,10 @@ public class HomePageController {
     @PostMapping("/bankTransfer")
     public ModelAndView bankTransfer(@ModelAttribute BankTransferForm bankTransferForm) {
         User user = userService.getUserByEmail(auth.getName());
-        System.out.println(user.getEmail());
-        System.out.println(user.getBalance());
-        System.out.println(bankTransferForm.getTransferType());
-        System.out.println(bankTransferForm.getAmount());
-
         ModelAndView modelAndView = new ModelAndView("redirect:/home");
-
-        String error = null;
         if (bankTransferForm.getTransferType().equals("debit")
                 && bankTransferForm.getAmount() > user.getBalance()) {
-            error = "nocredit";
+            String error = "nocredit";
             modelAndView.addObject("msg", error);
             return modelAndView;
         }

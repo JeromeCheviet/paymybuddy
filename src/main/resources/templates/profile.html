@@ -1,0 +1,143 @@
+<th:block th:insert="~{fragments/header}"></th:block>
+
+<div class="container">
+    <div id="alert-box" th:if="${(param.msg != null) and (param.msg[0] == 'balance')}" class="alert alert-danger"
+         role="alert">
+        You're wallet is not empty. Please transfer money to your bank account.
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6 fs-4">
+                    My Personals Information
+                </div>
+                <div class="col-6">
+                    <div class="d-flex justify-content-end mb-1">
+                        <button type="button" class="btn btn-primary fw-bold" data-bs-toggle="modal"
+                                data-bs-target="#editProfile">
+                            Edit Profile
+                        </button>
+
+                        <!-- Modal Edit Profile -->
+                        <div class="modal fade" id="editProfile" tabindex="-1" aria-labelledby="editProfileLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editProfileLabel">Edit profile</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <form method="post"
+                                          th:action="@{/editUser}"
+                                          th:object="${editedUser}">
+                                        <div class="modal-body">
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="userName" name="userName"
+                                                       placeholder="Name"
+                                                       th:field="*{userName}">
+                                                <label for="userName">Name</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="password" class="form-control" id="password"
+                                                       name="password"
+                                                       placeholder="Password"
+                                                       th:field="*{password}">
+                                                <label for="password">Password</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="bankName" name="bankName"
+                                                       placeholder="Bank Name"
+                                                       th:field="*{bankName}">
+                                                <label for="bankName">Bank Name</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="rib" name="rib"
+                                                       placeholder="RIB/IBAN"
+                                                       th:field="*{rib}">
+                                                <label for="rib">RIB/IBAN</label>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                Close
+                                            </button>
+                                            <button type="submit" class="btn btn-primary" name="Submit"
+                                                    value="save">
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 m-auto">
+            <table class="table table-striped table-hover border border-dark align-middle">
+                <tbody class="text-center">
+                <tr class="text-center">
+                    <th class="head-bg py-5">Email</th>
+                    <td class="text-center"><span th:text="${user.email}"></span></td>
+                </tr>
+                <tr class="text-center">
+                    <th class="head-bg py-5">Name</th>
+                    <td class="text-center"><span th:text="${user.userName}"></span></td>
+
+                </tr>
+                <tr>
+                    <th class="head-bg py-5">Bank Name</th>
+                    <td class="text-center"><span th:text="${user.bankName}"></span></td>
+                </tr>
+                <tr>
+                    <th class="head-bg py-5">RIB/IBAN</th>
+                    <td class="text-center"><span th:text="${user.rib}"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 m-auto">
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-danger fw-bolder" data-bs-toggle="modal"
+                        data-bs-target="#deleteProfile">
+                    Delete Profile
+                </button>
+
+                <!-- Modal Delete Profile -->
+                <div class="modal fade" id="deleteProfile" tabindex="-1" aria-labelledby="deleteProfileLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteProfileLabel">Delete profile</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                You're account will be permanently delete !
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form method="get" th:action="@{/delete/{userId}(userId=${user.userId})}">
+                                    <button type="submit" class="btn btn-danger" name="Delete" value="Delete">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/footer}"></th:block>
