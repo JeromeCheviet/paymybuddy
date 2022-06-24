@@ -6,7 +6,6 @@
     <table class="table table-light table-hover">
         <thead>
         <tr>
-            <th>ID</th>
             <th>Email</th>
             <th>Name</th>
             <th>Balance</th>
@@ -19,18 +18,41 @@
         <tr th:if="${users == null}">
             <td colspan="6">No users in database</td>
         </tr>
-        <tr th:each="user: ${users}">
-            <td><span th:text="${user.userId}">ID</span></td>
-            <td><span th:text="${user.email}">Email</span></td>
-            <td><span th:text="${user.userName}">Name</span></td>
-            <td><span th:text="${user.balance}">Balance</span></td>
-            <td><span th:text="${user.isRole} ? 'Admin' : 'User'">Role</span></td>
-            <td class="text-center"><a th:href="@{/admin/role/{userId}(userId=${user.userId})}" class="btn btn-primary"><span
-                    th:text="${user.isRole} ? 'Revoke' : 'Promote'">Change User Role</span></a></td>
-            <td class="text-center"><a th:href="@{/admin/delete/{userId}(userId=${user.userId})}"
-                                       class="btn btn-danger ">Delete</a></td>
+        <tr th:each="oneUser: ${users}">
+            <th:block th:unless="${oneUser.email} eq ${user.email}">
+                <td><span th:text="${oneUser.email}">Email</span></td>
+                <td><span th:text="${oneUser.userName}">Name</span></td>
+                <td><span th:text="${oneUser.balance}">Balance</span></td>
+                <td><span th:text="${oneUser.isRole} ? 'Admin' : 'User'">Role</span></td>
+                <td class="text-center"><a th:href="@{/admin/role/{userId}(userId=${oneUser.userId})}"
+                                           class="btn btn-primary"><span
+                        th:text="${oneUser.isRole} ? 'Revoke' : 'Promote'">Change User Role</span></a></td>
+                <td class="text-center"><a th:href="@{/admin/delete/{userId}(userId=${oneUser.userId})}"
+                                           class="btn btn-danger ">Delete</a></td>
+            </th:block>
         </tr>
         </tbody>
     </table>
+    <th:block th:if="${users.getTotalPages() > 0}">
+        <nav>
+            <ul class="pagination">
+                <li class="page-item">
+                    <a th:href="@{/admin(page=${pages.get(0)})}" class="page-link">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <th:block th:each="page: ${pages}">
+                    <li class="page-item" th:classappend="${page==users.number + 1} ? active">
+                        <a th:href="@{/admin(page=${page})}" class="page-link" th:text="${page}"></a>
+                    </li>
+                </th:block>
+                <li class="page-item">
+                    <a th:href="@{/admin(page=${pages.get(pages.size() - 1)})}" class="page-link">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </th:block>
 </div>
 <th:block th:insert="~{fragments/footer}"></th:block>

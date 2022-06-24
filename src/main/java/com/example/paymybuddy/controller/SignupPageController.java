@@ -39,7 +39,7 @@ public class SignupPageController {
             modelAndView.addObject("error", msg);
             return modelAndView;
         }
-        modelAndView.addObject("redirect:/");
+
         return modelAndView;
     }
 

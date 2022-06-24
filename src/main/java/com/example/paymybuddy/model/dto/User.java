@@ -8,7 +8,7 @@ import java.util.List;
 
 
 /**
- *  Class use to connect with table contact
+ * Class use to connect with table contact
  */
 @Entity
 @DynamicUpdate
@@ -35,49 +35,26 @@ public class User {
     @Column(name = "bank_name")
     private String bankName;
 
-    @Column(name = "transfert_to_bank")
-    private float transfertToBank;
-
-    @Column(name = "transfert_from_bank")
-    private float transfertFromBank;
-
     @Column(name = "balance")
     private float balance;
 
     @Column(name = "role")
     private boolean role;
 
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER
-    )
-    @JoinColumn(name = "user_id")
-    List<Transaction> transactions = new ArrayList<>();
-
-    /*
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true,
-            fetch = FetchType.EAGER
-    )
-    @JoinColumn(name = "beneficiary_user_id")
-    List<Transaction> beneficiaries = new ArrayList<>();
-    */
-
-    @ManyToMany(
-            fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }
-    )
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "assoc_user_contact",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "contact_id")
+            name = "contact",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "friend_id", referencedColumnName = "id", nullable = false)
     )
-    private List<Contact> contacts = new ArrayList<>();
+    private List<User> friendList;
+
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    List<Transaction> transactions = new ArrayList<>();
 
     public int getUserId() {
         return userId;
@@ -127,22 +104,6 @@ public class User {
         this.bankName = bankName;
     }
 
-    public float getTransfertToBank() {
-        return transfertToBank;
-    }
-
-    public void setTransfertToBank(float transfertToBank) {
-        this.transfertToBank = transfertToBank;
-    }
-
-    public float getTransfertFromBank() {
-        return transfertFromBank;
-    }
-
-    public void setTransfertFromBank(float transfertFromBank) {
-        this.transfertFromBank = transfertFromBank;
-    }
-
     public float getBalance() {
         return balance;
     }
@@ -159,6 +120,14 @@ public class User {
         this.role = role;
     }
 
+    public List<User> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(List<User> friendList) {
+        this.friendList = friendList;
+    }
+
     public List<Transaction> getTransactions() {
         return transactions;
     }
@@ -166,23 +135,4 @@ public class User {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
-
-    /*
-    public List<Transaction> getBeneficiaries() {
-        return beneficiaries;
-    }
-
-    public void setBeneficiaries(List<Transaction> beneficiaries) {
-        this.beneficiaries = beneficiaries;
-    }
-    */
-
-    public List<Contact> getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(List<Contact> contacts) {
-        this.contacts = contacts;
-    }
-
 }

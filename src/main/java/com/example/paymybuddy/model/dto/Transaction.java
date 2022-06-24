@@ -19,6 +19,18 @@ public class Transaction {
     @Column(name = "date")
     private LocalDate date;
 
+    @ManyToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    @ManyToOne(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "beneficiary_user_id", referencedColumnName = "id")
+    private User beneficiaryUser;
+
     @Column(name = "transaction_type")
     private String transactionType;
 
@@ -48,6 +60,22 @@ public class Transaction {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getBeneficiaryUser() {
+        return beneficiaryUser;
+    }
+
+    public void setBeneficiaryUser(User beneficiaryUser) {
+        this.beneficiaryUser = beneficiaryUser;
     }
 
     public String getTransactionType() {

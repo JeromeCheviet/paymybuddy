@@ -63,3 +63,31 @@ h1.paymybuddy-title {
     color: #000;
     text-decoration: none;
 }
+
+.head-bg {
+    background: #6EB861 !important;
+    color: #fff !important;
+}
+
+.table td, .table th {
+    border: none;
+}
+
+.validate-btn {
+    background: #6EB861 !important;
+    color: #fff !important;
+    text-transform: capitalize;
+    border-radius: 7px;
+    padding-left: 2.5em !important;
+    padding-right: 2.5em !important;
+    font-weight: bold !important;
+}
+
+.description-row-container {
+    display: none;
+}
+
+.description-row-container.active {
+    display: block;
+}
+
