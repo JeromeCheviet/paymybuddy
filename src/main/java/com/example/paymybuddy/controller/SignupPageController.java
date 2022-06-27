@@ -1,6 +1,6 @@
 package com.example.paymybuddy.controller;
 
-import com.example.paymybuddy.model.dto.User;
+import com.example.paymybuddy.model.application.SignupForm;
 import com.example.paymybuddy.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,21 +19,21 @@ public class SignupPageController {
 
     @GetMapping("/signup")
     public String signupPage(Model model) {
-        model.addAttribute("newUser", new User());
+        model.addAttribute("newUser", new SignupForm());
         model.addAttribute("title", "Signup");
 
         return "signup";
     }
 
     @PostMapping("/newUser")
-    public ModelAndView newUser(@ModelAttribute User newUser) {
+    public ModelAndView newUser(@ModelAttribute SignupForm newUser) {
         ModelAndView modelAndView = new ModelAndView("redirect:/");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
 
         Boolean isCreated = userService.saveUser(newUser);
 
-        if (!isCreated) {
+        if (Boolean.FALSE.equals(isCreated)) {
             modelAndView = new ModelAndView("redirect:/signup");
             String msg = "mailexist";
             modelAndView.addObject("error", msg);

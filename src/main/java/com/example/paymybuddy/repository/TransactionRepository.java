@@ -1,12 +1,18 @@
 package com.example.paymybuddy.repository;
 
 import com.example.paymybuddy.model.dto.Transaction;
-import org.springframework.data.repository.CrudRepository;
+import com.example.paymybuddy.model.dto.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 /**
  * Interface to build queries run on the transaction table.
  */
 @Repository
-public interface TransactionRepository extends CrudRepository<Transaction, Integer> {
+public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Integer> {
+
+    Page<Transaction> findByUser(User user, Pageable pageable);
+
 }

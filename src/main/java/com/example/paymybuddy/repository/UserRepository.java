@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends PagingAndSortingRepository<User, Integer> {
 
-    public User findByEmail(String email);
+    User findByEmail(String email);
 
     Page<User> findAll(Pageable pageable);
 

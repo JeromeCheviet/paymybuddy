@@ -1,6 +1,7 @@
 package com.example.paymybuddy.service;
 
 import com.example.paymybuddy.model.application.EditUserForm;
+import com.example.paymybuddy.model.application.SignupForm;
 import com.example.paymybuddy.model.dto.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +21,7 @@ public interface UserService {
 
     void changeUserRole(User existingUser);
 
-    boolean saveUser(User newUser);
+    boolean saveUser(SignupForm newUser);
 
     void userDelete(User user);
 

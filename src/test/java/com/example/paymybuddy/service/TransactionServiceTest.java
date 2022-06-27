@@ -4,27 +4,27 @@ import com.example.paymybuddy.model.application.AddTransferForm;
 import com.example.paymybuddy.model.dto.Transaction;
 import com.example.paymybuddy.model.dto.User;
 import com.example.paymybuddy.repository.TransactionRepository;
-import com.example.paymybuddy.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TransactionServiceTest {
+class TransactionServiceTest {
     @InjectMocks
     private TransactionService transactionService = new TransactionServiceImpl();
 
@@ -77,10 +77,8 @@ public class TransactionServiceTest {
         expectedTransaction.setUser(expectedUser);
         expectedTransaction.setBeneficiaryUser(beneficiaryUser);
         expectedTransaction.setDescription("Is a test");
-        expectedTransaction.setTransactionType("credit");
         expectedTransaction.setAmount(0.0f);
-        expectedTransaction.setPercentFee(0.5f);
-        expectedTransaction.setTotalAmount(0.05f);
+        expectedTransaction.setFeeAmount(0.05f);
 
 
     }
@@ -100,6 +98,20 @@ public class TransactionServiceTest {
     }
 
     @Test
+    void testGetTransactionByPage() {
+        List<Transaction> transactionList = new ArrayList<>();
+        transactionList.add(expectedTransaction);
+        Page<Transaction> expectedPage = new PageImpl(transactionList);
+
+        when(transactionRepository.findByUser(expectedUser, PageRequest.of(0,3))).thenReturn(expectedPage);
+
+        Page<Transaction> actualPage = transactionService.getTransactionByPage(expectedUser, PageRequest.of(0, 3));
+
+        assertEquals(expectedPage, actualPage);
+        verify(transactionRepository, times(1)).findByUser(expectedUser, PageRequest.of(0,3));
+    }
+
+    @Test
     void testAddTransaction() {
         AddTransferForm addTransferForm = new AddTransferForm();
 
@@ -114,7 +126,7 @@ public class TransactionServiceTest {
 
         transactionService.addTransaction(expectedUser, addTransferForm);
 
-        assertEquals(0.05f, expectedTransaction.getTotalAmount());
+        assertEquals(0.05f, expectedTransaction.getFeeAmount());
         verify(userService, times(1)).getUserById(2000);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }

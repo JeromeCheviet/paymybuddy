@@ -31,20 +31,14 @@ public class Transaction {
     @JoinColumn(name = "beneficiary_user_id", referencedColumnName = "id")
     private User beneficiaryUser;
 
-    @Column(name = "transaction_type")
-    private String transactionType;
-
     @Column(name = "amount")
     private float amount;
-
-    @Column(name = "percent_fee")
-    private float percentFee;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "total_amount")
-    private float totalAmount;
+    @Column(name = "fee_amount")
+    private float feeAmount;
 
     public int getId() {
         return id;
@@ -78,28 +72,12 @@ public class Transaction {
         this.beneficiaryUser = beneficiaryUser;
     }
 
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
-    }
-
     public float getAmount() {
         return amount;
     }
 
     public void setAmount(float amount) {
         this.amount = amount;
-    }
-
-    public float getPercentFee() {
-        return percentFee;
-    }
-
-    public void setPercentFee(float percentFee) {
-        this.percentFee = percentFee;
     }
 
     public String getDescription() {
@@ -110,11 +88,11 @@ public class Transaction {
         this.description = description;
     }
 
-    public float getTotalAmount() {
-        return totalAmount;
+    public float getFeeAmount() {
+        return feeAmount;
     }
 
-    public void setTotalAmount(float totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setFeeAmount(float feeAmount) {
+        this.feeAmount = feeAmount;
     }
 }
