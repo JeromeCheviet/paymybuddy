@@ -1,6 +1,7 @@
 package com.example.paymybuddy.service;
 
 import com.example.paymybuddy.model.application.EditUserForm;
+import com.example.paymybuddy.model.application.SignupForm;
 import com.example.paymybuddy.model.dto.User;
 import com.example.paymybuddy.repository.UserRepository;
 import org.apache.logging.log4j.LogManager;
@@ -104,15 +105,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean saveUser(User newUser) {
+    public boolean saveUser(SignupForm newUser) {
         String newUserEmail = newUser.getEmail();
         newUserEmail = newUserEmail.replaceAll(regexpSecurity, "_");
         User existingUser = userRepository.findByEmail(newUserEmail);
+
         if (existingUser != null) {
             logger.info("User no created. Email {} already exist.", newUserEmail);
             return false;
         }
-        userRepository.save(newUser);
+
+        User user = new User();
+        user.setEmail(newUser.getEmail());
+        user.setPassword(newUser.getPassword());
+        user.setUserName(newUser.getUserName());
+        user.setBankName(newUser.getBankName());
+        user.setRib(newUser.getRib());
+        user.setBalance(0.0f);
+        user.setRole(false);
+
+        userRepository.save(user);
+
         return true;
     }
 

@@ -23,8 +23,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger(SpringSecurityConfig.class);
 
-    //private static final String ADMIN = "ADMIN";
-
     @Autowired
     @Qualifier("userDetailsServiceImpl")
     private UserDetailsService customUserDetailsService;

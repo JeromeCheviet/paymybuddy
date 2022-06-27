@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -33,10 +35,17 @@ public class ContactPageController {
         auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
         Iterable<User> allUsers = userService.getUsers();
+        List<User> userList = new ArrayList<>();
+
+        allUsers.forEach(tmpUser -> {
+            if (!user.getFriendList().contains(tmpUser)) {
+                userList.add(tmpUser);
+            }
+        });
 
         model.addAttribute("user", user);
         model.addAttribute("friend", new User());
-        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("allUsers", userList);
         model.addAttribute("eachUser", new User());
         model.addAttribute("friendUser", new User());
         model.addAttribute("addConnectionForm", new AddConnectionForm());

@@ -7,6 +7,8 @@ import com.example.paymybuddy.repository.TransactionRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -38,6 +40,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Page<Transaction> getTransactionByPage(User user, PageRequest pageRequest) {
+        logger.debug("Get all transaction where userId is {}", user.getEmail());
+        return transactionRepository.findByUser(user, pageRequest);
+    }
+
+    @Override
     public void addTransaction(User user, AddTransferForm transaction) {
         Transaction newTransaction = new Transaction();
         float totalFee = (transaction.getAmount() * 0.5f) / 100;
@@ -51,9 +59,7 @@ public class TransactionServiceImpl implements TransactionService {
             newTransaction.setBeneficiaryUser(beneficiary.get());
             newTransaction.setDescription(transaction.getDescription());
             newTransaction.setAmount(transaction.getAmount());
-            newTransaction.setTransactionType("credit");
-            newTransaction.setPercentFee(0.5f);
-            newTransaction.setTotalAmount(totalFee);
+            newTransaction.setFeeAmount(totalFee);
 
         }
 

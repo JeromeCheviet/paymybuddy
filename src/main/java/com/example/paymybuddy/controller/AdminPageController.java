@@ -57,8 +57,6 @@ public class AdminPageController {
 
     @GetMapping("/admin/role/{userId}")
     public ModelAndView changeRole(@PathVariable("userId") final Integer userId) {
-        System.out.println(userId);
-
         Optional<User> user = userService.getUserById(userId);
 
         if (user.isPresent()) {
@@ -70,7 +68,6 @@ public class AdminPageController {
 
     @GetMapping("/admin/delete/{userId}")
     public ModelAndView deleteUser(@PathVariable("userId") final Integer userId) {
-        System.out.println(userId);
         Optional<User> user = userService.getUserById(userId);
 
         if (user.isPresent()) {

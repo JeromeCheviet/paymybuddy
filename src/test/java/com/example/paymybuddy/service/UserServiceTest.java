@@ -1,6 +1,7 @@
 package com.example.paymybuddy.service;
 
 import com.example.paymybuddy.model.application.EditUserForm;
+import com.example.paymybuddy.model.application.SignupForm;
 import com.example.paymybuddy.model.dto.User;
 import com.example.paymybuddy.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
     Float expectAmount;
     String expectTransferType;
 
@@ -206,21 +207,34 @@ public class UserServiceTest {
 
     @Test
     void testSaveUser_returnTrue() {
-        when(userRepository.findByEmail(expectedUser.getEmail())).thenReturn(null);
-        when(userRepository.save(expectedUser)).thenReturn(expectedUser);
+        SignupForm newUser = new SignupForm();
+        newUser.setEmail("john@mail.fr");
+        newUser.setPassword("123");
+        newUser.setUserName("john");
+        newUser.setBankName("my bank");
+        newUser.setRib("FR0700001111222");
 
-        boolean actualState = userService.saveUser(expectedUser);
+        when(userRepository.findByEmail("john@mail.fr")).thenReturn(null);
+        when(userRepository.save(any(User.class))).thenReturn(expectedUser);
+
+        boolean actualState = userService.saveUser(newUser);
 
         assertEquals(true, actualState);
-        verify(userRepository, times(1)).findByEmail(expectedUser.getEmail());
-        verify(userRepository, times(1)).save(expectedUser);
+        verify(userRepository, times(1)).findByEmail("john@mail.fr");
+        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test
     void testSaveUser_returnFalse() {
+        SignupForm newUser = new SignupForm();
+        newUser.setEmail(expectedUser.getEmail());
+        newUser.setPassword(expectedUser.getPassword());
+        newUser.setUserName(expectedUser.getUserName());
+        newUser.setBankName(expectedUser.getBankName());
+        newUser.setRib(expectedUser.getRib());
         when(userRepository.findByEmail(expectedUser.getEmail())).thenReturn(expectedUser);
 
-        boolean actualState = userService.saveUser(expectedUser);
+        boolean actualState = userService.saveUser(newUser);
 
         assertEquals(false, actualState);
         verify(userRepository, times(1)).findByEmail(expectedUser.getEmail());
