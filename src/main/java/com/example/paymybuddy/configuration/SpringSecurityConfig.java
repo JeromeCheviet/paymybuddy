@@ -13,6 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 /**
  * Class to configure authentication and authorization with Spring Security.
@@ -22,6 +26,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger(SpringSecurityConfig.class);
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     @Qualifier("userDetailsServiceImpl")
@@ -44,7 +51,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login").defaultSuccessUrl("/home").failureUrl("/login?error=true").permitAll()
                 .and()
-                .logout().logoutUrl("/logout").logoutSuccessUrl("/login");
+                .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
+                .and()
+                .rememberMe().key("mykey").tokenValiditySeconds(3600).rememberMeParameter("remember")
+        //.rememberMe().tokenRepository(persistentTokenRepository()).rememberMeParameter("remember")
+        ;
     }
 
     /**
@@ -61,12 +72,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Method to encode password with BCrypt hash.
+     *
      * @return encoded passeword.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         logger.debug("Encode password");
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
     }
 
 }
