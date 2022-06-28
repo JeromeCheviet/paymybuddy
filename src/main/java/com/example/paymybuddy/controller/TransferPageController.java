@@ -44,8 +44,7 @@ public class TransferPageController {
         logger.debug("Access transfer page");
         auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
-        Iterable<User> allUsers = userService.getUsers();
-        List<User> userList = new ArrayList<>();
+        List<User> userList = userService.allUsersExceptFriends(user);
 
         int currentPage = page.orElse(1);
         Sort sort = Sort.by(Sort.Order.desc("date"));
@@ -56,11 +55,6 @@ public class TransferPageController {
         List<Integer> pages = calculateNbPage.pagesList(totalPages);
         logger.debug("list pages : {}", pages.size());
 
-        allUsers.forEach(tmpUser -> {
-            if (!user.getFriendList().contains(tmpUser)) {
-                userList.add(tmpUser);
-            }
-        });
 
         model.addAttribute("user", user);
         model.addAttribute("allUsers", userList);

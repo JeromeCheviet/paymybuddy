@@ -6,6 +6,8 @@ import com.example.paymybuddy.model.dto.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
+
 public interface TransactionService {
     Iterable<Transaction> getTransactions();
 
@@ -13,4 +15,5 @@ public interface TransactionService {
 
     void addTransaction(User user, AddTransferForm transaction);
 
+    float calculateTotalFeesAmount(List<Transaction> transactions);
 }

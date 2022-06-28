@@ -29,7 +29,7 @@ public class SignupPageController {
     public ModelAndView newUser(@ModelAttribute SignupForm newUser) {
         ModelAndView modelAndView = new ModelAndView("redirect:/");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+        newUser.setSignupPassword(bCryptPasswordEncoder.encode(newUser.getSignupPassword()));
 
         Boolean isCreated = userService.saveUser(newUser);
 

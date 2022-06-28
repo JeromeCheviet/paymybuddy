@@ -6,6 +6,7 @@ import com.example.paymybuddy.model.dto.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -32,4 +33,6 @@ public interface UserService {
     void removeContact(User actualUser, User friendUser);
 
     void makeTransaction(float amount, User user, User beneficiaryUser);
+
+    List<User> allUsersExceptFriends(User user);
 }
