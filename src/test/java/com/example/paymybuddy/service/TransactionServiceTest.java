@@ -103,12 +103,12 @@ class TransactionServiceTest {
         transactionList.add(expectedTransaction);
         Page<Transaction> expectedPage = new PageImpl(transactionList);
 
-        when(transactionRepository.findByUser(expectedUser, PageRequest.of(0,3))).thenReturn(expectedPage);
+        when(transactionRepository.findByUser(expectedUser, PageRequest.of(0, 3))).thenReturn(expectedPage);
 
         Page<Transaction> actualPage = transactionService.getTransactionByPage(expectedUser, PageRequest.of(0, 3));
 
         assertEquals(expectedPage, actualPage);
-        verify(transactionRepository, times(1)).findByUser(expectedUser, PageRequest.of(0,3));
+        verify(transactionRepository, times(1)).findByUser(expectedUser, PageRequest.of(0, 3));
     }
 
     @Test
@@ -129,5 +129,49 @@ class TransactionServiceTest {
         assertEquals(0.05f, expectedTransaction.getFeeAmount());
         verify(userService, times(1)).getUserById(2000);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
+    }
+
+    @Test
+    void testCalculateTotalFeesAmount() {
+        List<Transaction> transactionList = new ArrayList<>();
+        Transaction secondTransaction = new Transaction();
+        Transaction thirdTransaction = new Transaction();
+
+        secondTransaction.setId(4);
+        secondTransaction.setDate(LocalDate.now());
+        secondTransaction.setUser(expectedUser);
+        secondTransaction.setBeneficiaryUser(beneficiaryUser);
+        secondTransaction.setDescription("Is a test");
+        secondTransaction.setAmount(0.0f);
+        secondTransaction.setFeeAmount(0.05f);
+
+        thirdTransaction.setId(5);
+        thirdTransaction.setDate(LocalDate.now());
+        thirdTransaction.setUser(expectedUser);
+        thirdTransaction.setBeneficiaryUser(beneficiaryUser);
+        thirdTransaction.setDescription("Is a test");
+        thirdTransaction.setAmount(0.0f);
+        thirdTransaction.setFeeAmount(1f);
+
+        transactionList.add(expectedTransaction);
+        transactionList.add(secondTransaction);
+        transactionList.add(thirdTransaction);
+
+        float expectedTotalFees = expectedTransaction.getFeeAmount() + secondTransaction.getFeeAmount() + thirdTransaction.getFeeAmount();
+
+
+        float actualTotalFees = transactionService.calculateTotalFeesAmount(transactionList);
+
+        assertEquals(expectedTotalFees, actualTotalFees);
+    }
+
+    @Test
+    void testCalculateTotalFeesAmount_returnZero_whenEmptyTransactionList() {
+        List<Transaction> transactionList = new ArrayList<>();
+
+        float actualTotalFees = transactionService.calculateTotalFeesAmount(transactionList);
+
+        assertEquals(0f, actualTotalFees);
+
     }
 }

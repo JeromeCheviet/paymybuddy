@@ -208,11 +208,11 @@ class UserServiceTest {
     @Test
     void testSaveUser_returnTrue() {
         SignupForm newUser = new SignupForm();
-        newUser.setEmail("john@mail.fr");
-        newUser.setPassword("123");
-        newUser.setUserName("john");
-        newUser.setBankName("my bank");
-        newUser.setRib("FR0700001111222");
+        newUser.setSignupEmail("john@mail.fr");
+        newUser.setSignupPassword("123");
+        newUser.setSignupUserName("john");
+        newUser.setSignupBankName("my bank");
+        newUser.setSignupRib("FR0700001111222");
 
         when(userRepository.findByEmail("john@mail.fr")).thenReturn(null);
         when(userRepository.save(any(User.class))).thenReturn(expectedUser);
@@ -227,11 +227,11 @@ class UserServiceTest {
     @Test
     void testSaveUser_returnFalse() {
         SignupForm newUser = new SignupForm();
-        newUser.setEmail(expectedUser.getEmail());
-        newUser.setPassword(expectedUser.getPassword());
-        newUser.setUserName(expectedUser.getUserName());
-        newUser.setBankName(expectedUser.getBankName());
-        newUser.setRib(expectedUser.getRib());
+        newUser.setSignupEmail(expectedUser.getEmail());
+        newUser.setSignupPassword(expectedUser.getPassword());
+        newUser.setSignupUserName(expectedUser.getUserName());
+        newUser.setSignupBankName(expectedUser.getBankName());
+        newUser.setSignupRib(expectedUser.getRib());
         when(userRepository.findByEmail(expectedUser.getEmail())).thenReturn(expectedUser);
 
         boolean actualState = userService.saveUser(newUser);
@@ -242,7 +242,7 @@ class UserServiceTest {
 
     @Test
     void testModifyUser_modifyUserName() {
-       EditUserForm modifyUser = new EditUserForm();
+        EditUserForm modifyUser = new EditUserForm();
         modifyUser.setUserName("toto");
         modifyUser.setPassword("123");
         modifyUser.setRib("000-111");
@@ -503,12 +503,156 @@ class UserServiceTest {
         userList.add(expectedUser);
         Page<User> expectedPage = new PageImpl(userList);
 
-        when(userRepository.findAll(PageRequest.of(0,3))).thenReturn(expectedPage);
+        when(userRepository.findAll(PageRequest.of(0, 3))).thenReturn(expectedPage);
 
-        Page<User> actualPage = userService.getUsersByPage(PageRequest.of(0,3));
+        Page<User> actualPage = userService.getUsersByPage(PageRequest.of(0, 3));
 
         assertEquals(expectedPage, actualPage);
-        verify(userRepository, times(1)).findAll(PageRequest.of(0,3));
+        verify(userRepository, times(1)).findAll(PageRequest.of(0, 3));
+    }
+
+    @Test
+    void testAllUsersExceptFriends() {
+        User firstUser = new User();
+        User secondUser = new User();
+        User contactUser = new User();
+        List<User> allUsers = new ArrayList<>();
+        List<User> contactList = new ArrayList<>();
+
+        firstUser.setUserId(1000);
+        firstUser.setEmail("toto@mail.fr");
+        firstUser.setUserName("toto");
+        firstUser.setPassword("456");
+        firstUser.setRib("000-111");
+        firstUser.setBankName("sabank");
+
+        secondUser.setUserId(2000);
+        secondUser.setEmail("tata@mail.fr");
+        secondUser.setUserName("tata");
+        secondUser.setPassword("456");
+        secondUser.setRib("000-222");
+        secondUser.setBankName("sabank");
+
+        contactUser.setUserId(3000);
+        contactUser.setEmail("moncontact@mail.fr");
+        contactUser.setUserName("moncontact");
+        contactUser.setPassword("456");
+        contactUser.setRib("000-333");
+        contactUser.setBankName("sabank");
+
+        allUsers.add(expectedUser);
+        allUsers.add(firstUser);
+        allUsers.add(secondUser);
+        allUsers.add(contactUser);
+
+        contactList.add(contactUser);
+
+        expectedUser.setFriendList(contactList);
+
+        when(userRepository.findAll()).thenReturn(allUsers);
+
+        List<User> actualUserList = userService.allUsersExceptFriends(expectedUser);
+
+        assertThat(actualUserList)
+                .hasSize(2)
+                .extracting(User::getUserId)
+                .containsExactly(1000, 2000);
+        verify(userRepository, times(1)).findAll();
+
+    }
+
+    @Test
+    void testAllUsersExceptFriends_returnEmptyList() {
+        User firstUser = new User();
+        User secondUser = new User();
+        User contactUser = new User();
+        List<User> allUsers = new ArrayList<>();
+        List<User> contactList = new ArrayList<>();
+
+        firstUser.setUserId(1000);
+        firstUser.setEmail("toto@mail.fr");
+        firstUser.setUserName("toto");
+        firstUser.setPassword("456");
+        firstUser.setRib("000-111");
+        firstUser.setBankName("sabank");
+
+        secondUser.setUserId(2000);
+        secondUser.setEmail("tata@mail.fr");
+        secondUser.setUserName("tata");
+        secondUser.setPassword("456");
+        secondUser.setRib("000-222");
+        secondUser.setBankName("sabank");
+
+        contactUser.setUserId(3000);
+        contactUser.setEmail("moncontact@mail.fr");
+        contactUser.setUserName("moncontact");
+        contactUser.setPassword("456");
+        contactUser.setRib("000-333");
+        contactUser.setBankName("sabank");
+
+        allUsers.add(expectedUser);
+        allUsers.add(firstUser);
+        allUsers.add(secondUser);
+        allUsers.add(contactUser);
+
+        contactList.add(contactUser);
+        contactList.add(firstUser);
+        contactList.add(secondUser);
+
+        expectedUser.setFriendList(contactList);
+
+        when(userRepository.findAll()).thenReturn(allUsers);
+
+        List<User> actualUserList = userService.allUsersExceptFriends(expectedUser);
+
+        assertThat(actualUserList)
+                .isEmpty();
+        verify(userRepository, times(1)).findAll();
+    }
+
+    @Test
+    void testAllUsersExceptFriends_returnAllUsers() {
+        User firstUser = new User();
+        User secondUser = new User();
+        User contactUser = new User();
+        List<User> allUsers = new ArrayList<>();
+
+        firstUser.setUserId(1000);
+        firstUser.setEmail("toto@mail.fr");
+        firstUser.setUserName("toto");
+        firstUser.setPassword("456");
+        firstUser.setRib("000-111");
+        firstUser.setBankName("sabank");
+
+        secondUser.setUserId(2000);
+        secondUser.setEmail("tata@mail.fr");
+        secondUser.setUserName("tata");
+        secondUser.setPassword("456");
+        secondUser.setRib("000-222");
+        secondUser.setBankName("sabank");
+
+        contactUser.setUserId(3000);
+        contactUser.setEmail("moncontact@mail.fr");
+        contactUser.setUserName("moncontact");
+        contactUser.setPassword("456");
+        contactUser.setRib("000-333");
+        contactUser.setBankName("sabank");
+
+        allUsers.add(expectedUser);
+        allUsers.add(firstUser);
+        allUsers.add(secondUser);
+        allUsers.add(contactUser);
+
+
+        when(userRepository.findAll()).thenReturn(allUsers);
+
+        List<User> actualUserList = userService.allUsersExceptFriends(expectedUser);
+
+        assertThat(actualUserList)
+                .hasSize(3)
+                .extracting(User::getUserId)
+                .containsExactly(1000, 2000, 3000);
+        verify(userRepository, times(1)).findAll();
     }
 
 }

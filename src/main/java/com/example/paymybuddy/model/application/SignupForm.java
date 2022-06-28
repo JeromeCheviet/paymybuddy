@@ -4,49 +4,49 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SignupForm {
-    private String email;
-    private String password;
-    private String userName;
-    private String bankName;
-    private String rib;
+    private String signupEmail;
+    private String signupPassword;
+    private String signupUserName;
+    private String signupBankName;
+    private String signupRib;
 
-    public String getEmail() {
-        return email;
+    public String getSignupEmail() {
+        return signupEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSignupEmail(String signupEmail) {
+        this.signupEmail = signupEmail;
     }
 
-    public String getPassword() {
-        return password;
+    public String getSignupPassword() {
+        return signupPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setSignupPassword(String signupPassword) {
+        this.signupPassword = signupPassword;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getSignupUserName() {
+        return signupUserName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setSignupUserName(String signupUserName) {
+        this.signupUserName = signupUserName;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getSignupBankName() {
+        return signupBankName;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setSignupBankName(String signupBankName) {
+        this.signupBankName = signupBankName;
     }
 
-    public String getRib() {
-        return rib;
+    public String getSignupRib() {
+        return signupRib;
     }
 
-    public void setRib(String rib) {
-        this.rib = rib;
+    public void setSignupRib(String signupRib) {
+        this.signupRib = signupRib;
     }
 }

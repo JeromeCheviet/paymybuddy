@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -64,6 +65,21 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         transactionRepository.save(newTransaction);
+    }
+
+    @Override
+    public float calculateTotalFeesAmount(List<Transaction> transactions) {
+        float totalFees = 0f;
+
+        if (transactions.isEmpty()) {
+            return totalFees;
+        }
+
+        for (Transaction transaction: transactions) {
+            totalFees += transaction.getFeeAmount();
+        }
+
+        return totalFees;
     }
 
 }

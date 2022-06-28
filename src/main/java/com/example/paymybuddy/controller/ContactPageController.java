@@ -34,14 +34,7 @@ public class ContactPageController {
         logger.debug("Access contact page");
         auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
-        Iterable<User> allUsers = userService.getUsers();
-        List<User> userList = new ArrayList<>();
-
-        allUsers.forEach(tmpUser -> {
-            if (!user.getFriendList().contains(tmpUser)) {
-                userList.add(tmpUser);
-            }
-        });
+        List<User> userList = userService.allUsersExceptFriends(user);
 
         model.addAttribute("user", user);
         model.addAttribute("friend", new User());

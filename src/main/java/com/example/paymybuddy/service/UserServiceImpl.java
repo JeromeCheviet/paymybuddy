@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean saveUser(SignupForm newUser) {
-        String newUserEmail = newUser.getEmail();
+        String newUserEmail = newUser.getSignupEmail();
         newUserEmail = newUserEmail.replaceAll(regexpSecurity, "_");
         User existingUser = userRepository.findByEmail(newUserEmail);
 
@@ -116,11 +116,11 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = new User();
-        user.setEmail(newUser.getEmail());
-        user.setPassword(newUser.getPassword());
-        user.setUserName(newUser.getUserName());
-        user.setBankName(newUser.getBankName());
-        user.setRib(newUser.getRib());
+        user.setEmail(newUser.getSignupEmail());
+        user.setPassword(newUser.getSignupPassword());
+        user.setUserName(newUser.getSignupUserName());
+        user.setBankName(newUser.getSignupBankName());
+        user.setRib(newUser.getSignupRib());
         user.setBalance(0.0f);
         user.setRole(false);
 
@@ -216,5 +216,24 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(userIterable);
 
     }
+
+    @Override
+    public List<User> allUsersExceptFriends(User user) {
+        Iterable<User> allUsers = getUsers();
+        List<User> userList = new ArrayList<>();
+
+        allUsers.forEach(userList::add);
+
+        if (user.getFriendList() != null) {
+            user.getFriendList().forEach(friend -> {
+                    userList.remove(friend);
+            });
+        }
+
+        userList.remove(user);
+
+        return userList;
+    }
+
 
 }
