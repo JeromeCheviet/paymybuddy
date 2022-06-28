@@ -25,7 +25,6 @@ import java.util.Optional;
 @Controller
 public class AdminPageController {
     private static final Logger logger = LogManager.getLogger(AdminPageController.class);
-    private Authentication auth;
 
     private CalculateNbPage calculateNbPage = new CalculateNbPageImpl();
 
@@ -34,7 +33,7 @@ public class AdminPageController {
 
     @GetMapping("/admin")
     public String adminPage(Model model, @RequestParam("page") Optional<Integer> page) {
-        auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         int currentPage = page.orElse(1);
         User user = userService.getUserByEmail(auth.getName());
         User oneUser = new User();

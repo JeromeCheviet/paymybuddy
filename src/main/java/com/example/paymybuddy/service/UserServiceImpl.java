@@ -225,9 +225,7 @@ public class UserServiceImpl implements UserService {
         allUsers.forEach(userList::add);
 
         if (user.getFriendList() != null) {
-            user.getFriendList().forEach(friend -> {
-                    userList.remove(friend);
-            });
+            user.getFriendList().forEach(userList::remove);
         }
 
         userList.remove(user);
