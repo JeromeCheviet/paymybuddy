@@ -70,10 +70,19 @@ public class TransferPageController {
     public ModelAndView addTransfer(@ModelAttribute AddTransferForm addTransferForm) {
         User user = userService.getUserByEmail(auth.getName());
         ModelAndView modelAndView = new ModelAndView("redirect:/transfer");
+        String error;
+
+        if (addTransferForm.getUserId() == 0) {
+            error = "noconnection";
+            modelAndView.addObject("msg", error);
+            logger.info("No user selected");
+            return modelAndView;
+        }
 
         if (addTransferForm.getAmount() > user.getBalance()) {
-            String error = "noenoughmoney";
+            error = "noenoughmoney";
             modelAndView.addObject("msg", error);
+            logger.info("No enough money");
             return modelAndView;
         }
 

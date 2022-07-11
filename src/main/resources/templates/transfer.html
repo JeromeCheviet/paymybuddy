@@ -1,9 +1,14 @@
 <th:block th:insert="~{fragments/header}"></th:block>
 
 <div class="container">
-    <div id="alert-box" th:if="${(param.msg != null) and (param.msg[0] == 'noenoughmoney')}"
+    <div id="alert-box" th:if="${(param.msg != null)}"
          class="alert alert-danger" role="alert">
-        You have no enough money to make this transaction !
+        <th:block th:if="${(param.msg[0] == 'noconnection')}">
+            Please select a connection !
+        </th:block>
+        <th:block th:if="${(param.msg[0] == 'noenoughmoney')}">
+            You have no enough money to make this transaction !
+        </th:block>
     </div>
     <div class="row">
         <div class="col-12">
