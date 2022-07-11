@@ -48,7 +48,9 @@ public class ContactPageController {
 
     @PostMapping("/addConnection")
     public ModelAndView addConnection(@ModelAttribute AddConnectionForm addConnectionForm) {
+        logger.debug("Add a new connection with userId : {}", addConnectionForm.getUserConnectionId());
         ModelAndView modelAndView = new ModelAndView("redirect:/contact");
+        auth = SecurityContextHolder.getContext().getAuthentication();
         User actualUser = userService.getUserByEmail(auth.getName());
         if (addConnectionForm.getUserConnectionId() == 0) {
             modelAndView.addObject("msg", "noUserSelected");
@@ -56,6 +58,8 @@ public class ContactPageController {
         }
 
         Integer userId = addConnectionForm.getUserConnectionId();
+
+        logger.debug("Try to add user with id {} to friend from user {}", addConnectionForm.getUserConnectionId(), actualUser.getEmail());
 
         Optional<User> friendUser = userService.getUserById(userId);
 
