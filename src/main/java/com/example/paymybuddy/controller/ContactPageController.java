@@ -28,6 +28,11 @@ public class ContactPageController {
     @Autowired
     private UserService userService;
 
+    @ModelAttribute("addConnectionForm")
+    private AddConnectionForm addConnectionForm() {
+        return new AddConnectionForm();
+    }
+
     @GetMapping("/contact")
     public String contactPage(Model model) {
         logger.debug("Access contact page");
@@ -40,18 +45,18 @@ public class ContactPageController {
         model.addAttribute("allUsers", userList);
         model.addAttribute("eachUser", new User());
         model.addAttribute("friendUser", new User());
-        model.addAttribute("addConnectionForm", new AddConnectionForm());
         model.addAttribute("title", "Contact");
 
         return "contact";
     }
 
     @PostMapping("/addConnection")
-    public ModelAndView addConnection(@ModelAttribute AddConnectionForm addConnectionForm) {
+    public ModelAndView addConnection(@ModelAttribute("addConnectionForm") AddConnectionForm addConnectionForm) {
         logger.debug("Add a new connection with userId : {}", addConnectionForm.getUserConnectionId());
         ModelAndView modelAndView = new ModelAndView("redirect:/contact");
         auth = SecurityContextHolder.getContext().getAuthentication();
         User actualUser = userService.getUserByEmail(auth.getName());
+
         if (addConnectionForm.getUserConnectionId() == 0) {
             modelAndView.addObject("msg", "noUserSelected");
             return modelAndView;
@@ -74,6 +79,7 @@ public class ContactPageController {
     @GetMapping("/deleteConnection/{userId}")
     public ModelAndView deleteConnection(@PathVariable("userId") final Integer userId) {
         Optional<User> friendUser = userService.getUserById(userId);
+        auth = SecurityContextHolder.getContext().getAuthentication();
         User actualUser = userService.getUserByEmail(auth.getName());
 
         if (friendUser.isPresent()) {

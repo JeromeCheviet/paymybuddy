@@ -25,7 +25,10 @@ public class HomePageController {
     @Autowired
     private UserService userService;
 
-    private Authentication auth;
+    @ModelAttribute("bankTransferForm")
+    public BankTransferForm bankTransferForm() {
+        return new BankTransferForm();
+    }
 
     /**
      * Manage welcome page.
@@ -36,7 +39,7 @@ public class HomePageController {
     @GetMapping("/home")
     public String homePage(Model model) {
         logger.debug("Access home page");
-        auth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean flag = false;
         User user = userService.getUserByEmail(auth.getName());
 
@@ -44,7 +47,6 @@ public class HomePageController {
             flag = true;
         }
         model.addAttribute("user", user);
-        model.addAttribute("bankTransferForm", new BankTransferForm());
         model.addAttribute("title", "Home");
         model.addAttribute("flag", flag);
 
@@ -52,8 +54,10 @@ public class HomePageController {
     }
 
     @PostMapping("/bankTransfer")
-    public ModelAndView bankTransfer(@ModelAttribute BankTransferForm bankTransferForm) {
+    public ModelAndView bankTransfer(@ModelAttribute("bankTransferForm") BankTransferForm bankTransferForm) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
+        logger.debug("Starting a transfer to user {}", user.getEmail());
         ModelAndView modelAndView = new ModelAndView("redirect:/home");
         if (bankTransferForm.getTransferType().equals("debit")
                 && bankTransferForm.getAmount() > user.getBalance()) {

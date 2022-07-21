@@ -28,6 +28,10 @@ public class ProfilePageController {
     @Autowired
     private UserService userService;
 
+    @ModelAttribute("editedUser")
+    private EditUserForm editedUser() {
+        return new EditUserForm();
+    }
 
     @GetMapping("/profile")
     public String profilePage(Model model) {
@@ -36,7 +40,6 @@ public class ProfilePageController {
         User user = userService.getUserByEmail(auth.getName());
 
         model.addAttribute("user", user);
-        model.addAttribute("editedUser", new EditUserForm());
         model.addAttribute("title", "Profile");
 
         return "profile";
@@ -44,11 +47,12 @@ public class ProfilePageController {
 
     @GetMapping("/delete/{userId}")
     public ModelAndView purgeUser(@PathVariable("userId") final Integer userId) {
-
         Optional<User> user = userService.getUserById(userId);
 
         if (user.isPresent()) {
-            if (user.get().getBalance() > 0) {
+            float userBalance = user.get().getBalance();
+            logger.debug("User balance = {}", userBalance);
+            if (userBalance > 0) {
                 ModelAndView modelAndView = new ModelAndView("redirect:/profile");
                 modelAndView.addObject("msg", "balance");
                 return modelAndView;
@@ -61,8 +65,10 @@ public class ProfilePageController {
     }
 
     @PostMapping("/editUser")
-    public ModelAndView editUser(@ModelAttribute EditUserForm editedUser) {
+    public ModelAndView editUser(@ModelAttribute("editedUser") EditUserForm editedUser) {
+        auth = SecurityContextHolder.getContext().getAuthentication();
         User connectedUser = userService.getUserByEmail(auth.getName());
+
 
         if (!editedUser.getPassword().isEmpty()) {
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
