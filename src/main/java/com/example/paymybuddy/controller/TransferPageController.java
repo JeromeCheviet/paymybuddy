@@ -38,6 +38,11 @@ public class TransferPageController {
     @Autowired
     private TransactionService transactionService;
 
+    @ModelAttribute("addTransferForm")
+    private AddTransferForm addTransferForm() {
+        return new AddTransferForm();
+    }
+
     @GetMapping("/transfer")
     public String transferPage(Model model, @RequestParam("page") Optional<Integer> page) {
         logger.debug("Access transfer page");
@@ -57,7 +62,6 @@ public class TransferPageController {
 
         model.addAttribute("user", user);
         model.addAttribute("allUsers", userList);
-        model.addAttribute("addTransferForm", new AddTransferForm());
         model.addAttribute("addConnectionForm", new AddConnectionForm());
         model.addAttribute("transactionList", transactionPage);
         model.addAttribute("pages", pages);
@@ -67,7 +71,8 @@ public class TransferPageController {
     }
 
     @PostMapping("/sendMoney")
-    public ModelAndView addTransfer(@ModelAttribute AddTransferForm addTransferForm) {
+    public ModelAndView addTransfer(@ModelAttribute("addTransferForm") AddTransferForm addTransferForm) {
+        auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
         ModelAndView modelAndView = new ModelAndView("redirect:/transfer");
         String error;

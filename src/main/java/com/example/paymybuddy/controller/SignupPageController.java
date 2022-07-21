@@ -2,6 +2,8 @@ package com.example.paymybuddy.controller;
 
 import com.example.paymybuddy.model.application.SignupForm;
 import com.example.paymybuddy.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -13,20 +15,26 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class SignupPageController {
+    private static final Logger logger = LogManager.getLogger(SignupPageController.class);
 
     @Autowired
     private UserService userService;
 
+    @ModelAttribute("newUser")
+    public SignupForm signupForm() {
+        return new SignupForm();
+    }
+
     @GetMapping("/signup")
     public String signupPage(Model model) {
-        model.addAttribute("newUser", new SignupForm());
         model.addAttribute("title", "Signup");
 
         return "signup";
     }
 
     @PostMapping("/newUser")
-    public ModelAndView newUser(@ModelAttribute SignupForm newUser) {
+    public ModelAndView newUser(@ModelAttribute("newUser") SignupForm newUser) {
+        logger.debug("Creating a new user");
         ModelAndView modelAndView = new ModelAndView("redirect:/");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         newUser.setSignupPassword(bCryptPasswordEncoder.encode(newUser.getSignupPassword()));
@@ -37,6 +45,7 @@ public class SignupPageController {
             modelAndView = new ModelAndView("redirect:/signup");
             String msg = "mailexist";
             modelAndView.addObject("error", msg);
+            logger.info("Email already exist in database");
             return modelAndView;
         }
 
