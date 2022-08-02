@@ -13,10 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
-
-import javax.sql.DataSource;
 
 /**
  * Class to configure authentication and authorization with Spring Security.
@@ -26,9 +22,6 @@ import javax.sql.DataSource;
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final Logger logger = LogManager.getLogger(SpringSecurityConfig.class);
-
-    @Autowired
-    private DataSource dataSource;
 
     @Autowired
     @Qualifier("userDetailsServiceImpl")
@@ -53,9 +46,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login")
                 .and()
-                .rememberMe().key("mykey").tokenValiditySeconds(3600).rememberMeParameter("remember")
-        //.rememberMe().tokenRepository(persistentTokenRepository()).rememberMeParameter("remember")
-        ;
+                .rememberMe().key("mykey").tokenValiditySeconds(3600).rememberMeParameter("remember");
     }
 
     /**
@@ -79,13 +70,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         logger.debug("Encode password");
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        return tokenRepository;
     }
 
 }

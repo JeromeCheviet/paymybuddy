@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * Class which manage the home page
+ * Class which manage the Home Page. It is the default page when you are logged. User can see his balance and transfer money to or from his bank account.
  */
 @Controller
 public class HomePageController {
@@ -31,10 +31,10 @@ public class HomePageController {
     }
 
     /**
-     * Manage welcome page.
+     * Principal method to loading Home page.
      *
-     * @param model
-     * @return String "welcome".
+     * @param model Attributes needed to load the page.
+     * @return Welcome Page.
      */
     @GetMapping("/home")
     public String homePage(Model model) {
@@ -53,14 +53,21 @@ public class HomePageController {
         return "home";
     }
 
+    /**
+     * Method to transfer money to or from user bank account.
+     *
+     * @param bankTransferForm Model class to receive form information.
+     * @return redirect to Home page if user have enough money in this wallet or nocredit if no more money to make the transfer to his bank.
+     */
     @PostMapping("/bankTransfer")
     public ModelAndView bankTransfer(@ModelAttribute("bankTransferForm") BankTransferForm bankTransferForm) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.getUserByEmail(auth.getName());
-        logger.debug("Starting a transfer to user {}", user.getEmail());
+        logger.info("Starting a transfer to user {}", user.getEmail());
         ModelAndView modelAndView = new ModelAndView("redirect:/home");
         if (bankTransferForm.getTransferType().equals("debit")
                 && bankTransferForm.getAmount() > user.getBalance()) {
+            logger.info("No enough money in wallet to make this operation.");
             String error = "nocredit";
             modelAndView.addObject("msg", error);
             return modelAndView;

@@ -1,5 +1,8 @@
 package com.example.paymybuddy.model.application;
 
+/**
+ * Class to receive Profile page form data.
+ */
 public class EditUserForm {
     private String userName;
     private String password;

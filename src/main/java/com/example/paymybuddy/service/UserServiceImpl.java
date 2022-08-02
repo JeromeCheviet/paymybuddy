@@ -29,9 +29,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     /**
-     * Method which returns all data from user table
-     *
-     * @return <b>User</b> : All data in User object.
+     * {@inheritDoc}
      */
     @Override
     public Iterable<User> getUsers() {
@@ -39,42 +37,32 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<User> getUsersByPage(PageRequest pageRequest) {
         return userRepository.findAll(pageRequest);
     }
 
     /**
-     * Method to have user by this id.
-     *
-     * @param id
-     * @return User
+     * {@inheritDoc}
      */
     @Override
     public Optional<User> getUserById(Integer id) {
         logger.debug("Get user with id : {} ", id);
         return userRepository.findById(id);
     }
-
     /**
-     * Method to have user by this email.
-     *
-     * @param email
-     * @return User
+     * {@inheritDoc}
      */
     @Override
     public User getUserByEmail(String email) {
         logger.debug("Get user with email : {}", email);
         return userRepository.findByEmail(email);
     }
-
     /**
-     * Method to set user balance. You can credit your account from your bank
-     * or debit your account to your bank.
-     *
-     * @param existingUser - <b>User</b> object
-     * @param amount       - <b>float</b> amount to credit or debit.
-     * @param transferType - <b>String</b> Transaction type.
+     * {@inheritDoc}
      */
     @Override
     public void transferFromOrToBank(User existingUser, Float amount, String transferType) {
@@ -93,6 +81,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existingUser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void changeUserRole(User existingUser) {
         if (existingUser.isRole()) {
@@ -104,6 +95,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existingUser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean saveUser(SignupForm newUser) {
         String newUserEmail = newUser.getSignupEmail();
@@ -129,11 +123,17 @@ public class UserServiceImpl implements UserService {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userDelete(User existingUser) {
         userRepository.delete(existingUser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void modifyUser(User existingUser, EditUserForm editedUser) {
         String userEmail = existingUser.getEmail();
@@ -163,6 +163,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(existingUser);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addContact(User actualUser, User friendUser) {
         List<User> friendList = actualUser.getFriendList();
@@ -183,6 +186,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void removeContact(User actualUser, User friendUser) {
         List<User> friendList = actualUser.getFriendList();
@@ -200,6 +206,9 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void makeTransaction(float amount, User user, User beneficiaryUser) {
 
@@ -217,6 +226,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<User> allUsersExceptFriends(User user) {
         Iterable<User> allUsers = getUsers();

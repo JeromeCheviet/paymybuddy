@@ -15,10 +15,10 @@ public class LoginController {
     private static final Logger logger = LogManager.getLogger(LoginController.class);
 
     /**
-     * Manage home page.
+     * Manage root page.
      *
-     * @param model
-     * @return String "login".
+     * @param model Attributes needed to load the page.
+     * @return Login page
      */
     @GetMapping("/")
     public String rootPage(Model model) {
@@ -29,8 +29,8 @@ public class LoginController {
     /**
      * Manage login page.
      *
-     * @param model
-     * @return String "login".
+     * @param model Attributes needed to load the page.
+     * @return Login Page.
      */
     @GetMapping("/login")
     public String loginPage(Model model) {

@@ -30,9 +30,7 @@ public class TransactionServiceImpl implements TransactionService {
     private UserService userService;
 
     /**
-     * Method which returns all data from transaction table
-     *
-     * @return <b>Transaction</b> : All data in Transaction object.
+     * {@inheritDoc}
      */
     @Override
     public Iterable<Transaction> getTransactions() {
@@ -40,12 +38,18 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Page<Transaction> getTransactionByPage(User user, PageRequest pageRequest) {
         logger.debug("Get all transaction where userId is {}", user.getEmail());
         return transactionRepository.findByUser(user, pageRequest);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addTransaction(User user, AddTransferForm transaction) {
         Transaction newTransaction = new Transaction();
@@ -67,6 +71,9 @@ public class TransactionServiceImpl implements TransactionService {
         transactionRepository.save(newTransaction);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public float calculateTotalFeesAmount(List<Transaction> transactions) {
         float totalFees = 0f;
