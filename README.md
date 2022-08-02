@@ -1,92 +1,170 @@
-# projet6
+# Pay My Buddy
 
+Pay my buddy is an application to easily send money to your friend.
 
+## Diagrams
 
-## Getting started
+### UML Class Diagram
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+![uml](./docs/uml.png)
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Physical Data Domain
 
-## Add your files
-
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
-
-```
-cd existing_repo
-git remote add origin http://gitlab.gharan.local/openclassrooms/projet6.git
-git branch -M main
-git push -uf origin main
-```
-
-## Integrate with your tools
-
-- [ ] [Set up project integrations](http://gitlab.gharan.local/openclassrooms/projet6/-/settings/integrations)
-
-## Collaborate with your team
-
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+![mpd](./docs/mpd.png)
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+This application was developed with __Java OpenJDK 11.0.15__ and __Maven 3.8__
+
+You can compile the application in your prompt from the project folder : 
+
+```shell
+mvn clean install
+```
+__Before compile please be sure to use the right database connection information in properties file `./src/main/resources/application.properties`__
+
+The jar file is generated in the folder _target_ at the root of project.
+
+It recommended copying it in a working folder and renamed it to _patmybuddy.jar_.
+
+Before use the application, you need to install a [MySQL 8.0 server](https://dev.mysql.com/doc/mysql-installation-excerpt/8.0/en/)
+
+You can also use Docker to run it. 
+
+See docker-compose.yml example :
+
+```yaml
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0.28
+    container_name: paymybuddy_db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootroot
+      MYSQL_DATABASE: paymybuddy
+      MYSQL_USER: USERNAME
+      MYSQL_PASSWORD: STRONGPASSWORD
+    ports:
+      - 3306:3306
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+```
+
+### SQL scripts
+
+__MySQL 8__ server have been used to develop this application.
+
+To create the database copy this code, except if using __Docker__
+
+```mysql
+CREATE DATABASE IF NOT EXISTS paymybuddy CHARACTER SET utf8mb4 COLLATE utf8mb4_general_cli;
+```
+
+To allow a user to use the database copy this code, except if using __Docker__. It's highly recommended to a production environment.
+
+```mysql
+CREATE USER 'USERNAME'@'localhost' IDENTIFIED BY 'STRONGPASSWORD';
+GRANT ALL PRIVILEGES ON paymybuddy.* TO 'USERNAME'@'localhost';
+FLUSH PRIVILEGES ;
+```
+
+_You must change __USERNAME__ and __STRONGPASSWORD__ with your own information._
+
+Now you can create and populate (if you want test this POC) tables with this code or execute the [following files](./docs/script.sql) on your MySQL server.
+
+```mysql
+USE paymybuddy;
+
+CREATE TABLE `user`
+(
+    `id`        int          NOT NULL AUTO_INCREMENT,
+    `email`     varchar(50)  NOT NULL,
+    `password`  varchar(100) NOT NULL,
+    `name`      varchar(50)  NOT NULL,
+    `rib`       varchar(100) NOT NULL,
+    `bank_name` varchar(50)  NOT NULL,
+    `balance`   float        NOT NULL,
+    `role`      boolean      NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `email` (`email`)
+);
+
+CREATE TABLE `contact`
+(
+    `user_id`   int NOT NULL,
+    `friend_id` int NOT NULL,
+    PRIMARY KEY (`user_id`, `friend_id`),
+    KEY `userid` (`user_id`),
+    KEY `friendid` (`friend_id`),
+    CONSTRAINT `friendid` FOREIGN KEY (`friend_id`) REFERENCES `user` (`id`),
+    CONSTRAINT `userid` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+);
+
+CREATE TABLE `transaction`
+(
+    `id`                  int   NOT NULL AUTO_INCREMENT,
+    `date`                date  NOT NULL,
+    `user_id`             int   NOT NULL,
+    `beneficiary_user_id` int   NOT NULL,
+    `amount`              float NOT NULL,
+    `description`         varchar(255) DEFAULT NULL,
+    `fee_amount`          float        DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `user_id` (`user_id`),
+    KEY `beneficiary_user_id` (`beneficiary_user_id`),
+    CONSTRAINT `transaction_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `transaction_ibfk_2` FOREIGN KEY (`beneficiary_user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+);
+```
+
+```mysql
+INSERT INTO `user` (`email`, `password`, `name`, `rib`, `bank_name`, `balance`, `role`)
+VALUES ('jerome@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Jerome',
+        'FR700932922111114444', 'banque A', '0.0', '1'),
+       ('hayley@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Hayley',
+        'FR702134456787663332', 'banque B', '0.0', '0'),
+       ('clara@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Clara',
+        'FR706545033373569645', 'banque A', '0.0', '0'),
+       ('smith@mail.fr', '$2y$10$z8ycLx9471w0mfC0nMhYN.gcp3cVK3JsQdbgAyvgx8WmcuA3kEsz2', 'Smith', 'FR70765498230992134',
+        'banque B', '0.0', '0');
+```
+
+For all users, the password is ___password123___.
+
+The user ___"jerome@mail.fr"___ is an administrator.
+
+__Please drop table before use them in production environment !__
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+Before launch the application, ensure you the database is running.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+If you use __Docker__, build your MySQL server with : 
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+```shell
+docker-compose up -d
+```
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+After, you can use this command to stop or start your database : 
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+```shell
+docker-compose stop
+docker-compose start
+```
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+To run application use the following command :
 
-## License
-For open source projects, say how it is licensed.
+```shell
+java -jar paymybuddy.jar
+```
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Now you can access to the application with your favorite browser at this address :
+
+__http://localhost:8080__
+
+Finally, create a new user or connect with an existing user directly add to the database.

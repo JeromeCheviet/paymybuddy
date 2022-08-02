@@ -1,0 +1,77 @@
+<th:block th:insert="~{fragments/header}"></th:block>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-6 fs-4">
+                    User list
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped table-hover border border-dark align-middle">
+                <thead class="text-center head-bg align-middle">
+                <tr>
+                    <th class="py-5">Email</th>
+                    <th>Name</th>
+                    <th>Balance</th>
+                    <th>Role</th>
+                    <th>Change User Role</th>
+                    <th>Delete User</th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <tr th:if="${users.isEmpty()}">
+                    <td colspan="6">No user found in database</td>
+                </tr>
+                <tr th:each="oneUser: ${users}">
+                    <th:block th:unless="${oneUser.email} eq ${user.email}">
+                        <td class="py-5"><a th:href="@{/fees(userId=${oneUser.userId})}" class="text-decoration-none"><span th:text="${oneUser.email}">Email</a></span></td>
+                        <td><span th:text="${oneUser.userName}">Name</span></td>
+                        <td><span th:text="${oneUser.balance} % 1 == 0 ? ${#numbers.formatDecimal(oneUser.balance, 0, 0) + '€'}:${#numbers.formatDecimal(oneUser.balance, 0, 2) + '€'}">Balance</span></td>
+                        <td><span th:text="${oneUser.isRole} ? 'Admin' : 'User'">Role</span></td>
+                        <td class="text-center"><a th:href="@{/admin/role/{userId}(userId=${oneUser.userId})}"
+                                                   class="btn btn-primary"><span
+                                th:text="${oneUser.isRole} ? 'Revoke' : 'Promote'">Change User Role</span></a></td>
+                        <td class="text-center"><a th:href="@{/admin/delete/{userId}(userId=${oneUser.userId})}"
+                                                   class="btn btn-danger ">Delete</a></td>
+                    </th:block>
+                </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-center">
+                        <th:block th:if="${users.getTotalPages() > 0}">
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="page-item">
+                                        <a th:href="@{/admin(page=${pages.get(0)})}" class="page-link">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <th:block th:each="page: ${pages}">
+                                        <li class="page-item" th:classappend="${page==users.number + 1} ? active">
+                                            <a th:href="@{/admin(page=${page})}" class="page-link"
+                                               th:text="${page}"></a>
+                                        </li>
+                                    </th:block>
+                                    <li class="page-item">
+                                        <a th:href="@{/admin(page=${pages.get(pages.size() - 1)})}" class="page-link">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/footer}"></th:block>

@@ -1,0 +1,81 @@
+<th:block th:insert="~{fragments/header}"></th:block>
+
+<div class="container">
+    <div id="alert-box" th:if="${(param.msg != null) and (param.msg[0] == 'noUserSelected')}" class="alert alert-danger"
+         role="alert">
+        No user selected.
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="col-6 fs-4">
+                Add Connection
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 py-5 bg-light">
+            <form method="post"
+                  th:action="@{/addConnection}"
+                  th:object="${addConnectionForm}">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="px-5">
+                            <select class="form-select" th:field="*{userConnectionId}">
+                                <option value="0" selected>Select Mail Contact</option>
+                                <option th:each="eachUser : ${allUsers}"
+                                        th:unless="${eachUser.email} eq ${user.email}"
+                                        th:value="${eachUser.userId}"
+                                        th:utext="${eachUser.email}"/>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn validate-btn" name="submit"
+                                    value="validate">
+                                Validate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-12">
+            <div class="col-6 mt-5 fs-4">
+                Contact List
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped table-hover border border-dark align-middle">
+                <thead class="text-center head-bg align-middle">
+                <tr>
+                    <th class="py-5">Name</th>
+                    <th>Email</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <tr th:if="${user.getFriendList().isEmpty()}">
+                    <td class="py-5" colspan="3">You not have contacts yet!</td>
+                </tr>
+                <tr th:each="friend: ${user.getFriendList()}">
+                    <td class="py-5"><span th:text="${friend.userName}">Name</span></td>
+                    <td><span th:text="${friend.email}">Email</span></td>
+                    <td class="text-center"><a
+                            th:href="@{/deleteConnection/{userId}(userId=${friend.userId})}"
+                            class="btn btn-danger">Remove Connection</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<th:block th:insert="~{fragments/footer}"></th:block>
