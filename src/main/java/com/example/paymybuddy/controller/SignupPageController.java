@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+/**
+ * Class which manage the Signup Page. Any person can create a new account.
+ */
 @Controller
 public class SignupPageController {
     private static final Logger logger = LogManager.getLogger(SignupPageController.class);
@@ -25,6 +28,12 @@ public class SignupPageController {
         return new SignupForm();
     }
 
+    /**
+     * Principal method to loading Signup page.
+     *
+     * @param model Attributes needed to load the page.
+     * @return Signup page.
+     */
     @GetMapping("/signup")
     public String signupPage(Model model) {
         model.addAttribute("title", "Signup");
@@ -32,6 +41,12 @@ public class SignupPageController {
         return "signup";
     }
 
+    /**
+     * Method to create a new user.
+     *
+     * @param newUser Model class to receive form information.
+     * @return If email already exist in database redirect to signup page, else redirect to login page.
+     */
     @PostMapping("/newUser")
     public ModelAndView newUser(@ModelAttribute("newUser") SignupForm newUser) {
         logger.debug("Creating a new user");

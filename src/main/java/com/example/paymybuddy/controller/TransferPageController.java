@@ -27,6 +27,9 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class which manage the Transfer Page. User can see transactions already made or carry out new ones.
+ */
 @Controller
 public class TransferPageController {
     private static final Logger logger = LogManager.getLogger(TransferPageController.class);
@@ -43,6 +46,13 @@ public class TransferPageController {
         return new AddTransferForm();
     }
 
+    /**
+     * Principal method to loading Transfer page.
+     *
+     * @param model Attributes needed to load the page.
+     * @param page  Optional number page if the tab have more 4 rows.
+     * @return Transaction page.
+     */
     @GetMapping("/transfer")
     public String transferPage(Model model, @RequestParam("page") Optional<Integer> page) {
         logger.debug("Access transfer page");
@@ -70,6 +80,12 @@ public class TransferPageController {
         return "transfer";
     }
 
+    /**
+     * Method to send money to an existing contact. The contact must be in the user contact list.
+     *
+     * @param addTransferForm Model class to receive form information.
+     * @return Errors messages are sending if no contact is selected or if user have no enough money. Else redirect to Transfer page.
+     */
     @PostMapping("/sendMoney")
     public ModelAndView addTransfer(@ModelAttribute("addTransferForm") AddTransferForm addTransferForm) {
         auth = SecurityContextHolder.getContext().getAuthentication();

@@ -19,6 +19,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Optional;
 
+/**
+ * Class which manage the Profile Page. User can see this information, editing it or delete own account.
+ */
 @Controller
 public class ProfilePageController {
     private static final Logger logger = LogManager.getLogger(ProfilePageController.class);
@@ -33,6 +36,12 @@ public class ProfilePageController {
         return new EditUserForm();
     }
 
+    /**
+     * Principal method to loading Profile page.
+     *
+     * @param model Attributes needed to load the page.
+     * @return Profile page.
+     */
     @GetMapping("/profile")
     public String profilePage(Model model) {
         logger.debug("Access profile page");
@@ -45,6 +54,12 @@ public class ProfilePageController {
         return "profile";
     }
 
+    /**
+     * Method to delete own account.
+     *
+     * @param userId Own user ID in database.
+     * @return Log out if account is deleted or redirect to profile page if money is present in user wallet.
+     */
     @GetMapping("/delete/{userId}")
     public ModelAndView purgeUser(@PathVariable("userId") final Integer userId) {
         Optional<User> user = userService.getUserById(userId);
@@ -64,6 +79,14 @@ public class ProfilePageController {
         return new ModelAndView("redirect:/logout");
     }
 
+    /**
+     * Method to editing profile information. Each information can be editing separately or together.
+     * <br>
+     * The password is encoding before treatment.
+     *
+     * @param editedUser Model class to receive form information.
+     * @return redirect to profile page when account is updated.
+     */
     @PostMapping("/editUser")
     public ModelAndView editUser(@ModelAttribute("editedUser") EditUserForm editedUser) {
         auth = SecurityContextHolder.getContext().getAuthentication();
@@ -75,6 +98,7 @@ public class ProfilePageController {
             editedUser.setPassword(bCryptPasswordEncoder.encode(editedUser.getPassword()));
         }
 
+        logger.info("starting editing profile for user {}", connectedUser.getEmail());
         userService.modifyUser(connectedUser, editedUser);
 
         return new ModelAndView("redirect:/profile");

@@ -2,6 +2,9 @@ package com.example.paymybuddy.model.application;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * Class to receive Signup page data.
+ */
 @Component
 public class SignupForm {
     private String signupEmail;

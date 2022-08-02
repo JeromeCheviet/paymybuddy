@@ -22,6 +22,12 @@ import org.springframework.web.servlet.ModelAndView;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Class which manage the Admin Page. In this page, administrators can see all users, increase or decrease authority for a user,
+ * delete a user and see fees transaction (in other page).
+ * <p>
+ * Only users with ADMIN authority can access to this page.
+ */
 @Controller
 public class AdminPageController {
     private static final Logger logger = LogManager.getLogger(AdminPageController.class);
@@ -31,8 +37,16 @@ public class AdminPageController {
     @Autowired
     private UserService userService;
 
+    /**
+     * Principal method to loading Admin Page.
+     *
+     * @param model Attributes needed to load the page.
+     * @param page  Optional number page if the tab have more 4 rows.
+     * @return Page admin
+     */
     @GetMapping("/admin")
     public String adminPage(Model model, @RequestParam("page") Optional<Integer> page) {
+        logger.debug("Access Admin Page");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         int currentPage = page.orElse(1);
         User user = userService.getUserByEmail(auth.getName());
@@ -54,22 +68,36 @@ public class AdminPageController {
         return "admin";
     }
 
+    /**
+     * Method to change user authority.
+     *
+     * @param userId Table ID for selected user.
+     * @return redirect to Admin page.
+     */
     @GetMapping("/admin/role/{userId}")
     public ModelAndView changeRole(@PathVariable("userId") final Integer userId) {
         Optional<User> user = userService.getUserById(userId);
 
         if (user.isPresent()) {
+            logger.info("Changing authority for user : {}", user.get().getEmail());
             userService.changeUserRole(user.get());
         }
 
         return new ModelAndView("redirect:/admin");
     }
 
+    /**
+     * Method to delete a user.
+     *
+     * @param userId Table ID for selected user.
+     * @return redirect to Admin page.
+     */
     @GetMapping("/admin/delete/{userId}")
     public ModelAndView deleteUser(@PathVariable("userId") final Integer userId) {
         Optional<User> user = userService.getUserById(userId);
 
         if (user.isPresent()) {
+            logger.info("Deleting user : {}", user.get().getEmail());
             userService.userDelete(user.get());
         }
 
